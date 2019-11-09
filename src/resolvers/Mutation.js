@@ -32,9 +32,9 @@ const login = async (_, { email, password }, { prisma }) => {
   };
 };
 
-const post = (_, { description, url }, context) => {
-  const userId = getUserId(context);
-  return context.prisma.createLink({
+const post = (_, { description, url }, { request, prisma }) => {
+  const userId = getUserId(request);
+  return prisma.createLink({
     url,
     description,
     postedBy: { connect: { id: userId } }
@@ -54,10 +54,29 @@ const deleteLink = (_, { id }, { prisma }) => {
   return prisma.deleteLink({ id });
 };
 
+const vote = async (_, { linkId }, { request, prisma }) => {
+  const userId = getUserId(request);
+
+  const linkExists = await prisma.$exists.vote({
+    user: { id: userId },
+    link: { id: linkId }
+  });
+
+  if (linkExists) {
+    throw new Error(`Already votes for link: ${linkId}`);
+  }
+
+  return prisma.createVote({
+    user: { connect: { id: userId } },
+    link: { connect: { id: linkId } }
+  });
+};
+
 module.exports = {
   signup,
   login,
   post,
   updateLink,
-  deleteLink
+  deleteLink,
+  vote
 };
