@@ -14,7 +14,10 @@ const feed = async (_, { filter, skip, first, orderBy }, { prisma }) => {
 
 const link = (_, { id }, { prisma }) => prisma.link({ id });
 
+const users = (_, _1, { prisma }) => prisma.users();
+
 module.exports = {
   feed,
-  link
+  link,
+  users
 };

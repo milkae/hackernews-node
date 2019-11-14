@@ -2,6 +2,7 @@ type Query {
   info: String!
   feed(filter: String, skip: Int, first: Int, orderBy: LinkOrderByInput): Feed!
   link(id: ID!): Link
+  users: [User!]!
 }
 
 type Mutation {
@@ -25,6 +26,7 @@ type Feed {
 
 type Link {
   id: ID!
+  createdAt: String!
   description: String!
   url: String!
   postedBy: User
